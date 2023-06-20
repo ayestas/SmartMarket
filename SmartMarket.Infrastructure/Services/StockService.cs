@@ -1,13 +1,16 @@
 ﻿using SmartMarket.Core;
+using SmartMarket.Core.Interfaces;
+using SmartMarket.Infrastructure.Rules;
 
 namespace SmartMarket.Infrastructure;
 
-public class StockService
+public class StockService : IStockService
 {
     public async Task<bool> AddStockItemAsync(string stockItem)
     {
         var stockSerializer = new StockSerializer();
         var stockItemObject = stockSerializer.Deserialize(stockItem);
+
         if (string.IsNullOrEmpty(stockItemObject.ProductName))
         {
             return false;
@@ -17,20 +20,11 @@ public class StockService
         {
             return false;
         }
-      
-        var now = DateOnly.FromDateTime(DateTime.Now);
-        var currentAge = now.DayNumber - stockItemObject.ProducedOn.DayNumber;
-        switch (currentAge)
+
+        var isExpired = ExpirationRule.ExpirationConditions(stockItemObject);
+        if (!isExpired)
         {
-            case > 30:
-                return false;
-            case > 15:
-            case > 7 when stockItemObject.MembershipDeal is not null:
-                stockItemObject.IsCloseToExpirationDate = true;
-                break;
-            default:
-                stockItemObject.IsCloseToExpirationDate = false;
-                break;
+            return false;
         }
 
         using (var providerManagementService = new ProviderManagementService())

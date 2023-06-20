@@ -11,7 +11,10 @@ namespace SmartMarket.Tests
         public async Task AddStockItemAsync_IsNullOrEmpty_Fails(string stockItem)
         {
             var stockSerializerMock = new Mock<StockSerializer>();
-            stockSerializerMock.Setup(x => x.Deserialize(stockItem));
+            var stockItemObject = stockSerializerMock.Object.Deserialize(stockItem);
+
+
+            var result = stockItemObject.ProductName;
 
             
         }

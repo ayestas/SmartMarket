@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace SmartMarket.Core.Interfaces
 {
-    public class IStockService
+    public interface IStockService
     {
+        Task<bool> AddStockItemAsync(string stockItem);
     }
 }
