@@ -15,22 +15,24 @@ public class SalesPointTests
     public void ScanningOneQuantityItem_NoMembershipDeals_ReturnsPricexQuantity(DayOfWeek date)
     {
         // Arrange
-        var stock = new List<StockItem>
+        var stock = new StockItem
         {
-            new()
-            {
-                ProductName = "Milk",
-                Price = 1.23m,
-                ProducedOn = DateOnly.FromDateTime(DateTime.Now),
-                ProviderId = Guid.NewGuid(),
-                ProviderName = "Milk Provider"
-            }
+            ProductName = "Milk",
+            Price = 1.23m,
+            ProducedOn = DateOnly.FromDateTime(DateTime.Now),
+            ProviderId = Guid.NewGuid(),
+            ProviderName = "Milk Provider"
         };
+
+        var sP = new StockItemProxy(stock);
+        var stockProxy = new List<StockItemProxy>();
+        stockProxy.Add(sP);
+
         var _date = new Mock<IDateTimeNow>();
         _date.Setup(x => x.DateNow())
             .Returns(date);
 
-        var salesPoint = new SalesPoint(stock, _date.Object);
+        var salesPoint = new SalesPoint(stockProxy, _date.Object);
 
         // Act
         salesPoint.ScanItem("Milk");
@@ -48,22 +50,24 @@ public class SalesPointTests
     public void ScanningOneItemMultipleTimes_NoMembershipDeals_ReturnsPricexQuantity(DayOfWeek date)
     {
         // Arrange
-        var stock = new List<StockItem>
+        var stock = new StockItem
         {
-            new()
-            {
-                ProductName = "Milk",
-                Price = 1.23m,
-                ProducedOn = DateOnly.FromDateTime(DateTime.Now),
-                ProviderId = Guid.NewGuid(),
-                ProviderName = "Milk Provider"
-            }
+            ProductName = "Milk",
+            Price = 1.23m,
+            ProducedOn = DateOnly.FromDateTime(DateTime.Now),
+            ProviderId = Guid.NewGuid(),
+            ProviderName = "Milk Provider"
         };
+
+        var sP = new StockItemProxy(stock);
+        var stockProxy = new List<StockItemProxy>();
+        stockProxy.Add(sP);
+
         var _date = new Mock<IDateTimeNow>();
         _date.Setup(x => x.DateNow())
             .Returns(date);
 
-        var salesPoint = new SalesPoint(stock, _date.Object);
+        var salesPoint = new SalesPoint(stockProxy, _date.Object);
 
         // Act
         salesPoint.ScanItem("Milk");
@@ -84,28 +88,31 @@ public class SalesPointTests
     public void ScanningAnItem_WithMembershipDeal_ReturnsMembershipDealPrice(DayOfWeek date)
     {
         // Arrange
-        var stock = new List<StockItem>
+        var stock = new StockItem
         {
-            new()
+            ProductName = "Milk",
+            Price = 1.23m,
+            ProducedOn = DateOnly.FromDateTime(DateTime.Now),
+            ProviderId = Guid.NewGuid(),
+            ProviderName = "Milk Provider",
+            MembershipDeal = new MembershipDeal
             {
-                ProductName = "Milk",
-                Price = 1.23m,
-                ProducedOn = DateOnly.FromDateTime(DateTime.Now),
-                ProviderId = Guid.NewGuid(),
-                ProviderName = "Milk Provider",
-                MembershipDeal = new MembershipDeal
-                {
-                    Price = 2.00m,
-                    Quantity = 3,
-                    Product = "Milk"
-                }
+                Price = 2.00m,
+                Quantity = 3,
+                Product = "Milk"
             }
         };
+
+        var sP = new StockItemProxy(stock);
+        var stockProxy = new List<StockItemProxy>();
+        stockProxy.Add(sP);
+
+
         var _date = new Mock<IDateTimeNow>();
         _date.Setup(x => x.DateNow())
             .Returns(date);
 
-        var salesPoint = new SalesPoint(stock, _date.Object);
+        var salesPoint = new SalesPoint(stockProxy, _date.Object);
 
         // Act
         salesPoint.ScanItem("Milk");
@@ -125,28 +132,30 @@ public class SalesPointTests
     public void ScanningAnItem_WithMembershipDealAndMoreQuantity_ReturnsMembershipDealPricePlusPriceByQuantity(DayOfWeek date)
     {
         // Arrange
-        var stock = new List<StockItem>
+        var stock = new StockItem
         {
-            new()
+            ProductName = "Milk",
+            Price = 1.23m,
+            ProducedOn = DateOnly.FromDateTime(DateTime.Now),
+            ProviderId = Guid.NewGuid(),
+            ProviderName = "Milk Provider",
+            MembershipDeal = new MembershipDeal
             {
-                ProductName = "Milk",
-                Price = 1.23m,
-                ProducedOn = DateOnly.FromDateTime(DateTime.Now),
-                ProviderId = Guid.NewGuid(),
-                ProviderName = "Milk Provider",
-                MembershipDeal = new MembershipDeal
-                {
-                    Price = 2.00m,
-                    Quantity = 3,
-                    Product = "Milk"
-                }
+                Price = 2.00m,
+                Quantity = 3,
+                Product = "Milk"
             }
         };
+
+        var sP = new StockItemProxy(stock);
+        var stockProxy = new List<StockItemProxy>();
+        stockProxy.Add(sP);
+
         var _date = new Mock<IDateTimeNow>();
         _date.Setup(x => x.DateNow())
             .Returns(date);
 
-        var salesPoint = new SalesPoint(stock, _date.Object);
+        var salesPoint = new SalesPoint(stockProxy, _date.Object);
 
         // Act
         salesPoint.ScanItem("Milk");
@@ -164,29 +173,30 @@ public class SalesPointTests
     public void ScanningAnItem_OnMondayOrTuesday_ReturnsFivePercentDiscount(DayOfWeek date)
     {
         //Act
-        var stock = new List<StockItem>
+        var stock = new StockItem
         {
-            new()
+            ProductName = "Milk",
+            Price = 1.23m,
+            ProducedOn = DateOnly.FromDateTime(DateTime.Now),
+            ProviderId = Guid.NewGuid(),
+            ProviderName = "Milk Provider",
+            MembershipDeal = new MembershipDeal
             {
-                ProductName = "Milk",
-                Price = 1.23m,
-                ProducedOn = DateOnly.FromDateTime(DateTime.Now),
-                ProviderId = Guid.NewGuid(),
-                ProviderName = "Milk Provider",
-                MembershipDeal = new MembershipDeal
-                {
-                    Price = 2.00m,
-                    Quantity = 3,
-                    Product = "Milk"
-                }
+                Price = 2.00m,
+                Quantity = 3,
+                Product = "Milk"
             }
         };
+
+        var sP = new StockItemProxy(stock);
+        var stockProxy = new List<StockItemProxy>();
+        stockProxy.Add(sP);
 
         var _date = new Mock<IDateTimeNow>();
         _date.Setup(x => x.DateNow())
             .Returns(date);
 
-        var salesPoint = new SalesPoint(stock, _date.Object);
+        var salesPoint = new SalesPoint(stockProxy, _date.Object);
 
         // Act
         salesPoint.ScanItem("Milk");
