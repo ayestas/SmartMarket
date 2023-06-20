@@ -52,9 +52,13 @@ public class SalesPoint
             {
                 total -= total * 0.05m;
             }
+            
+            if(_dateTime.DateNow() is DayOfWeek.Saturday && stockItem.ProductName[0] == 's' || stockItem.ProductName[0] == 'S')
+            {
+                total -= total * 0.10m;
+            }
             totals.Add(product, total);
         }
-
         return totals;
     }
 }
